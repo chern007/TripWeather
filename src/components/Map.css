@@ -381,36 +381,63 @@
     }
 
     .route-info-overlay {
-        top: 70px;
-        /* Below controls */
-        left: 16px;
-        right: auto;
+        top: 16px;
+        /* Align with top */
+        left: auto;
+        /* Reset left */
+        right: 60px;
+        /* Right aligned, but left of the menu button/controls space */
         width: auto;
-        max-width: calc(100% - 32px);
+        max-width: calc(100% - 80px);
+        /* Prevent overlapping controls */
+        z-index: 900;
+        /* Ensure below menu if needed is handled */
     }
 
     .route-info-card {
-        padding: 12px 14px;
-        gap: 12px;
-        flex-wrap: wrap;
-        /* Allow wrapping on very small screens */
+        padding: 8px 12px;
+        gap: 8px;
+        flex-direction: column;
+        align-items: flex-end;
+        background-color: rgba(15, 23, 42, 0.9);
+    }
+
+    .info-divider {
+        display: none;
+    }
+
+    .info-main,
+    .info-secondary {
+        text-align: right;
+    }
+
+    .info-title {
+        font-size: 0.7rem;
+        margin-bottom: 2px;
     }
 
     .info-time span {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+    }
+
+    .info-label {
+        margin-top: 4px;
+        /* Space for second line */
     }
 
     .map-legend {
-        bottom: 30px;
+        bottom: 90px;
+        /* Lift up to avoid cutoff */
         left: 16px;
-        padding: 12px;
+        padding: 10px;
         min-width: auto;
+        max-width: 200px;
     }
 
     .map-click-hint {
-        bottom: 80px;
-        /* Move up to avoid legend overlap */
+        bottom: 30px;
         width: max-content;
         font-size: 0.7rem;
+        padding: 6px 12px;
     }
 }
