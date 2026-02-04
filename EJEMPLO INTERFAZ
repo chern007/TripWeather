@@ -1,0 +1,10 @@
+- Al añadir o eliminar un destino, automaticamente se vuelve a calcular y pintar la ruta y el panel del tiempo se
+actualiza.
+- El panel de resumen del viaje donde se muetra la distancia total, el tiempo estimado y el tiempo estimado con las
+paradas se deberá actualizar al mover la barra de velocidad del viaje.
+- El panel de resumen del viaje tendrá que estar en la esquina superior derecha y ademas un color de fondo y fuente que
+sea el adecuado para poder leerlo sin problemas.
+- En el slider de velocidad en vez de "Multiplicador del tiempo" poner "Velocidad media del viaje" y los valores del
+slider que sean en porcentajes con los incrementos que correspondan.
+- Por ultimo en la barra superior justo en la posicion central, ahora mismo no pone nada, podías poner en nombre de la
+ruta cuando se calcule, por ejemplo "Ruta de Madrid a Barcelona".
