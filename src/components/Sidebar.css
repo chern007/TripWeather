@@ -375,3 +375,11 @@
   font-size: 0.8rem;
   margin-top: 4px;
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    min-width: auto;
+    border-right: none;
+  }
+}

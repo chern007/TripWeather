@@ -214,10 +214,34 @@ function App() {
     }
   }, [stops, timeMultiplier, startTime]); // dependencies for useCallback
 
+  // Responsive state
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [showSidebar, setShowSidebar] = useState(!isMobile);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) setShowSidebar(true);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <div className="app">
+    <div className={`app ${isMobile ? 'is-mobile' : ''}`}>
       <header className="app-header">
         <div className="header-brand">
+          {isMobile && (
+            <button
+              className="icon-btn menu-btn"
+              onClick={() => setShowSidebar(!showSidebar)}
+            >
+              <span className="material-symbols-outlined">
+                {showSidebar ? 'close' : 'menu'}
+              </span>
+            </button>
+          )}
           <div className="brand-icon">
             <span className="material-symbols-outlined">route</span>
           </div>
@@ -228,19 +252,21 @@ function App() {
       </header>
 
       <div className="app-content">
-        <Sidebar
-          stops={stops}
-          onAddStop={handleAddStop}
-          onRemoveStop={handleRemoveStop}
-          onUpdateStop={handleUpdateStop}
-          onMoveStop={handleMoveStop}
-          startTime={startTime}
-          onStartTimeChange={setStartTime}
-          onCalculateRoute={handleCalculateRoute}
-          isLoading={isLoading}
-          timeMultiplier={timeMultiplier}
-          onTimeMultiplierChange={setTimeMultiplier}
-        />
+        <div className={`sidebar-wrapper ${showSidebar ? 'open' : 'closed'}`}>
+          <Sidebar
+            stops={stops}
+            onAddStop={handleAddStop}
+            onRemoveStop={handleRemoveStop}
+            onUpdateStop={handleUpdateStop}
+            onMoveStop={handleMoveStop}
+            startTime={startTime}
+            onStartTimeChange={setStartTime}
+            onCalculateRoute={handleCalculateRoute}
+            isLoading={isLoading}
+            timeMultiplier={timeMultiplier}
+            onTimeMultiplierChange={setTimeMultiplier}
+          />
+        </div>
         <Map
           routeGeometry={routeGeometry}
           weatherPoints={weatherPoints}

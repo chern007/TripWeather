@@ -373,3 +373,44 @@
     box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
     border: 2px solid white;
 }
+
+@media (max-width: 768px) {
+    .map-controls-ui {
+        top: 16px;
+        right: 16px;
+    }
+
+    .route-info-overlay {
+        top: 70px;
+        /* Below controls */
+        left: 16px;
+        right: auto;
+        width: auto;
+        max-width: calc(100% - 32px);
+    }
+
+    .route-info-card {
+        padding: 12px 14px;
+        gap: 12px;
+        flex-wrap: wrap;
+        /* Allow wrapping on very small screens */
+    }
+
+    .info-time span {
+        font-size: 0.85rem;
+    }
+
+    .map-legend {
+        bottom: 30px;
+        left: 16px;
+        padding: 12px;
+        min-width: auto;
+    }
+
+    .map-click-hint {
+        bottom: 80px;
+        /* Move up to avoid legend overlap */
+        width: max-content;
+        font-size: 0.7rem;
+    }
+}

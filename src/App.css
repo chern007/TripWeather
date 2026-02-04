@@ -87,4 +87,60 @@
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative; /* Crucial for absolute positioning of sidebar on mobile */
+}
+
+/* Sidebar Wrapper - Handles the toggle animation */
+.sidebar-wrapper {
+  height: 100%;
+  z-index: 50;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.menu-btn {
+  margin-right: 12px;
+  background-color: transparent;
+  color: white;
+  min-width: 40px;
+}
+
+.menu-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 16px;
+    height: 56px;
+  }
+
+  .brand-title {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .sidebar-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-dark);
+  }
+
+  .sidebar-wrapper.closed {
+    transform: translateX(-100%);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .sidebar-wrapper.open {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
