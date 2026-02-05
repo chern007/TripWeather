@@ -12,7 +12,8 @@ export default function Sidebar({
     onCalculateRoute,
     isLoading,
     timeMultiplier = 1.0,
-    onTimeMultiplierChange
+    onTimeMultiplierChange,
+    lastUpdated
 }) {
     const [newStop, setNewStop] = useState('');
     const [error, setError] = useState('');
@@ -189,6 +190,11 @@ export default function Sidebar({
                             </>
                         )}
                     </button>
+                    {lastUpdated && (
+                        <p className="refresh-info">
+                            Actualizado: {lastUpdated.toLocaleDateString()} {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                    )}
                 </div>
             </div>
         </aside>

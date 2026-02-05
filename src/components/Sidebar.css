@@ -383,3 +383,10 @@
     border-right: none;
   }
 }
+
+.refresh-info {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 8px;
+}

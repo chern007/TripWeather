@@ -36,6 +36,7 @@ function App() {
   const [routeSegments, setRouteSegments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [timeMultiplier, setTimeMultiplier] = useState(1.0);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   const generateId = () => `stop-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -206,6 +207,8 @@ function App() {
       // 5. Show ALL weather points (every 15 min, no filtering)
       setWeatherPoints(allWeatherData);
 
+      setLastUpdated(new Date());
+
     } catch (error) {
       console.error('Error calculating route:', error);
       // Don't alert on automatic updates to avoid annoyance
@@ -285,6 +288,7 @@ function App() {
             isLoading={isLoading}
             timeMultiplier={timeMultiplier}
             onTimeMultiplierChange={setTimeMultiplier}
+            lastUpdated={lastUpdated}
           />
         </div>
         <Map
@@ -296,6 +300,7 @@ function App() {
           onMapClick={handleMapClick}
           isMapClickEnabled={isMapClickEnabled}
           setIsMapClickEnabled={setIsMapClickEnabled}
+          showSidebar={showSidebar}
         />
       </div>
     </div>

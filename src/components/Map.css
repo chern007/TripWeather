@@ -56,7 +56,7 @@
     height: 8px;
 }
 
-/* Map Legend */
+/* Map Legend - Lowered bottom position */
 .map-legend {
     position: absolute;
     bottom: 24px;
@@ -69,7 +69,28 @@
     padding: 16px;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
     min-width: 160px;
+    transition: opacity 0.3s ease;
 }
+
+/* Hide legend when click hint is visible (handled via component logic or CSS sibling selector not possible here directly easily without parent class, will handle in JSX) */
+/* Actually, user asked for it to disappear when 'adding points menu' is shown, which is the Sidebar technically, OR the 'active' hint. 
+   Wait, user said: "debera desaparecer al mostrar el menú donde se añaden los puntos (tambien el cuadro de "añadir puntos ACTIVO")"
+   "Menú donde se añaden puntos" likely refers to the SIDEBAR (stops list). 
+   So in mobile, if sidebar is open, legend should be hidden? Or maybe the user means the 'bottom sheet' or the click hint itself?
+   
+   Re-reading: "El cuadro del tipo de precipitación (Legend) deberá de estar mas abajo... mientras no aparezca el cuadro informativo de 'Modo añadir puntos ACTIVO' (Click Hint). Además deberá desaparecer al mostrar el menú donde se añaden los puntos (Sidebar)"
+   
+   So:
+   1. If Sidebar Open -> Hide Legend & Hide Click Hint
+   2. If Click Hint Visible (Active Mode) -> Legend needs to move or disappear? "mas abajo (igual que hacia la izquierda) mientras no aparezca..."
+      It says: "lower... AS LONG AS the click hint DOES NOT appear". 
+      So if Click Hint APPEARS, Legend might need to move up or disappear.
+      Actually, the Click Hint is at the BOTTOM CENTER. The Legend is BOTTOM LEFT. 
+      In mobile, space is tight.
+      
+   Let's implement logic in JSX to pass 'showSidebar' to Map to hide these.
+*/
+
 
 .legend-title {
     font-size: 0.75rem;
@@ -424,8 +445,9 @@
     }
 
     .map-legend {
-        bottom: 90px;
-        /* Lift up to avoid cutoff */
+        bottom: 24px;
+        /* Lift up to avoid cutoff - Actually reset to 24px since we hide it when sidebar/actions open? 
+           User asked for "mas abajo" (lower). So 24px is good. */
         left: 16px;
         padding: 10px;
         min-width: auto;
