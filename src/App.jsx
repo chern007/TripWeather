@@ -124,32 +124,6 @@ function App() {
     }]);
   }, []);
 
-  // Automatic route calculation effect
-  useEffect(() => {
-    const resolvedStops = stops.filter(s => s.resolved);
-
-    // Update Route Name
-    if (resolvedStops.length >= 2) {
-      const start = resolvedStops[0].name.split(',')[0];
-      const end = resolvedStops[resolvedStops.length - 1].name.split(',')[0];
-      setRouteName(`Ruta de ${start} a ${end}`);
-    } else {
-      setRouteName('');
-    }
-
-    // Trigger calculation if we have enough stops and not currently loading specific stop details
-    // using a small debounce could be good but for now direct trigger
-    if (resolvedStops.length >= 2 && !stops.some(s => s.loading)) {
-      handleCalculateRoute(resolvedStops);
-    } else if (resolvedStops.length < 2) {
-      // Clear route if less than 2 stops
-      setRouteGeometry(null);
-      setWeatherPoints([]);
-      setRouteSegments([]);
-      setRouteInfo(null);
-    }
-  }, [stops, timeMultiplier, startTime]); // Recalculate on stops, speed, or time start change
-
   const handleCalculateRoute = useCallback(async (currentResolvedStops, isAutoRefresh = false) => {
     // If not passed (manual call), filter from state
     const resolvedStops = currentResolvedStops || stops.filter(s => s.resolved);
@@ -159,12 +133,8 @@ function App() {
     }
 
     setIsLoading(true);
-    // Note: We don't clear geometry immediately to avoid flickering on small updates
-
     try {
       // 1. Get route from OSRM
-      // Only fetch OSRM if geometry is null or stops changed (optimization)
-      // For now, allow refetch to be safe
       const route = await getRoute(resolvedStops.map(s => ({ lat: s.lat, lon: s.lon })));
 
       if (!route) {
@@ -183,7 +153,7 @@ function App() {
         adjustedDuration: route.duration * timeMultiplier // Adjusted by speed
       });
 
-      // Apply time multiplier for motorcycle/fast travel
+      // Apply time multiplier for travel speed
       const adjustedDuration = route.duration * timeMultiplier;
 
       // 2. Sample points along the route for weather (every 15 minutes)
@@ -191,7 +161,7 @@ function App() {
         route.geometry,
         adjustedDuration,
         startTime,
-        15 // Sample every 15 minutes for finer control
+        15 // Sample every 15 minutes
       );
 
       // 3. Get weather for each sampled point
@@ -206,18 +176,46 @@ function App() {
       );
       setRouteSegments(segments);
 
-      // 5. Show ALL weather points (every 15 min, no filtering)
+      // 5. Show weather points
       setWeatherPoints(allWeatherData);
 
       setLastUpdated(new Date());
 
     } catch (error) {
       console.error('Error calculating route:', error);
-      // Don't alert on automatic updates to avoid annoyance
     } finally {
       setIsLoading(false);
     }
-  }, [stops, timeMultiplier, startTime]); // dependencies for useCallback
+  }, [stops, timeMultiplier, startTime]);
+
+  // Automatic route calculation effect
+  useEffect(() => {
+    const resolvedStops = stops.filter(s => s.resolved);
+
+    // Update Route Name with safety checks
+    if (resolvedStops.length >= 2) {
+      try {
+        const start = resolvedStops[0].name ? resolvedStops[0].name.split(',')[0] : 'Inicio';
+        const end = resolvedStops[resolvedStops.length - 1].name ? resolvedStops[resolvedStops.length - 1].name.split(',')[0] : 'Destino';
+        setRouteName(`Ruta de ${start} a ${end}`);
+      } catch (e) {
+        console.error("Error setting route name:", e);
+      }
+    } else {
+      setRouteName('');
+    }
+
+    // Trigger calculation if we have enough stops and not currently loading specific stop details
+    if (resolvedStops.length >= 2 && !stops.some(s => s.loading) && !isLoading) {
+      handleCalculateRoute(resolvedStops);
+    } else if (resolvedStops.length < 2) {
+      // Clear route if less than 2 stops
+      setRouteGeometry(null);
+      setWeatherPoints([]);
+      setRouteSegments([]);
+      setRouteInfo(null);
+    }
+  }, [stops, timeMultiplier, startTime, handleCalculateRoute, isLoading]);
 
   // Auto-refresh interval (every 1 minute)
   useEffect(() => {

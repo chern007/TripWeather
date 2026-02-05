@@ -315,52 +315,37 @@ export default function Map({
                 Let's hide Legend if Sidebar is Open OR if Map Click Mode is Enabled to save space/avoid overlap, or just ensure positioning.
                 The user said: "deberá desaparecer al mostrar el menú... (tambien el cuadro de 'añadir puntos ACTIVO')" -> If Sidebar Open, Hide BOTH.
             */}
-            {/* Legend and Click Hint - Positioned at bottom left
-                Show on PC always (since sidebar is side-by-side).
-                Show on Mobile ONLY if sidebar is closed.
-            */}
-            {(!isMobile || !showSidebar) && (
-                <>
-                    {/* Legend: Show only if NOT in 'add point' mode to keep it clean, OR stack them?
-                        Request: "estar mas abajo (igual que hacia la izquierda) mientras no aparezca el cuadro..."
-                        Implies: Position is standard low. If Hint appears, maybe Legend moves?
-                        Simpler interpretation: Hide Legend if Add Mode is Active to avoid clutter in mobile.
-                        Let's keep it simple: If isMapClickEnabled, hide Legend? Or just position it?
-                        Let's keep Legend always visible unless Sidebar open, but maybe adjust bottom if Hint is there? 
-                        Actually, let's follow: "desaparecer al mostrar el menú". Done via !showSidebar.
-                    */}
-                    {!isMapClickEnabled && (
-                        <div className="map-legend">
-                            <h4 className="legend-title">Precipitación (mm)</h4>
-                            <div className="legend-items">
-                                <div className="legend-item">
-                                    <div className="legend-color" style={{ background: '#22c55e' }}></div>
-                                    <span className="legend-label">0 (Seco)</span>
-                                </div>
-                                <div className="legend-item">
-                                    <div className="legend-color" style={{ background: '#fbbf24' }}></div>
-                                    <span className="legend-label">&lt; 0.5 (Chispea)</span>
-                                </div>
-                                <div className="legend-item">
-                                    <div className="legend-color" style={{ background: '#f97316' }}></div>
-                                    <span className="legend-label">0.5 - 2 (Lluvia)</span>
-                                </div>
-                                <div className="legend-item">
-                                    <div className="legend-color" style={{ background: '#ef4444' }}></div>
-                                    <span className="legend-label">&gt; 2 (Intensa)</span>
-                                </div>
-                            </div>
+            {/* Legend - Show on PC always, show on Mobile ONLY if sidebar is closed */}
+            {(!isMobile || !showSidebar) && !isMapClickEnabled && (
+                <div className="map-legend">
+                    <h4 className="legend-title">Precipitación (mm)</h4>
+                    <div className="legend-items">
+                        <div className="legend-item">
+                            <div className="legend-color" style={{ background: '#22c55e' }}></div>
+                            <span className="legend-label">0 (Seco)</span>
                         </div>
-                    )}
+                        <div className="legend-item">
+                            <div className="legend-color" style={{ background: '#fbbf24' }}></div>
+                            <span className="legend-label">&lt; 0.5 (Chispea)</span>
+                        </div>
+                        <div className="legend-item">
+                            <div className="legend-color" style={{ background: '#f97316' }}></div>
+                            <span className="legend-label">0.5 - 2 (Lluvia)</span>
+                        </div>
+                        <div className="legend-item">
+                            <div className="legend-color" style={{ background: '#ef4444' }}></div>
+                            <span className="legend-label">&gt; 2 (Intensa)</span>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-                    {/* Click hint - Only shown when enabled and sidebar closed */}
-                    {isMapClickEnabled && (
-                        <div className="map-click-hint">
-                            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>touch_app</span>
-                            <span>Modo añadir puntos ACTIVO</span>
-                        </div>
-                    )}
-                </>
+            {/* Click hint - Show on Mobile/PC only when enabled and sidebar closed (on mobile) */}
+            {(!isMobile || !showSidebar) && isMapClickEnabled && (
+                <div className="map-click-hint">
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>touch_app</span>
+                    <span>Modo añadir puntos ACTIVO</span>
+                </div>
             )}
         </div>
     );
