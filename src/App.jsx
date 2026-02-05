@@ -214,6 +214,26 @@ function App() {
     }
   }, [stops, timeMultiplier, startTime]); // dependencies for useCallback
 
+  // Auto-refresh interval (every 1 minute)
+  useEffect(() => {
+    // Only set interval if we have a calculated route
+    if (!routeGeometry || stops.length < 2) return;
+
+    const intervalId = setInterval(() => {
+      // Just re-trigger calculation to fetch fresh weather data
+      // We pass null to use existing resolved stops
+      // This will update the 'now' time implicitly if we used Date.now(), 
+      // but since startTime is state, we might want to update startTime if it was "current time".
+      // For now, we just refresh weather for the existing time window.
+      handleCalculateRoute(null);
+    }, 60000); // 60000 ms = 1 minute
+
+    return () => clearInterval(intervalId);
+  }, [routeGeometry, stops, handleCalculateRoute]);
+
+  // Map Click Mode State
+  const [isMapClickEnabled, setIsMapClickEnabled] = useState(false);
+
   // Responsive state
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showSidebar, setShowSidebar] = useState(!isMobile);
@@ -274,6 +294,8 @@ function App() {
           routeInfo={routeInfo}
           routeSegments={routeSegments}
           onMapClick={handleMapClick}
+          isMapClickEnabled={isMapClickEnabled}
+          setIsMapClickEnabled={setIsMapClickEnabled}
         />
       </div>
     </div>

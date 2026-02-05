@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  /* Fallback and dynamic height for mobile browsers */
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -87,7 +89,8 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  position: relative; /* Crucial for absolute positioning of sidebar on mobile */
+  position: relative;
+  /* Crucial for absolute positioning of sidebar on mobile */
 }
 
 /* Sidebar Wrapper - Handles the toggle animation */

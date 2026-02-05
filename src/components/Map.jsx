@@ -110,7 +110,9 @@ export default function Map({
     stops,
     routeInfo,
     routeSegments,
-    onMapClick
+    onMapClick,
+    isMapClickEnabled,
+    setIsMapClickEnabled
 }) {
     const mapRef = useRef(null);
 
@@ -162,8 +164,8 @@ export default function Map({
                     routeSegments={routeSegments}
                 />
 
-                {/* Click handler for adding waypoints */}
-                <MapClickHandler onMapClick={onMapClick} />
+                {/* Click handler for adding waypoints - Only active if enabled */}
+                {isMapClickEnabled && <MapClickHandler onMapClick={onMapClick} />}
 
                 {/* Route segments with precipitation coloring */}
                 {routeSegments && routeSegments.length > 0 ? (
@@ -262,6 +264,19 @@ export default function Map({
                 ))}
             </MapContainer>
 
+            {/* Custom Map Controls UI */}
+            <div className="map-controls-ui">
+                <button
+                    className={`map-control-btn ${isMapClickEnabled ? 'primary' : ''}`}
+                    onClick={() => setIsMapClickEnabled(prev => !prev)}
+                    title={isMapClickEnabled ? "Desactivar añadir puntos" : "Activar añadir puntos"}
+                >
+                    <span className="material-symbols-outlined">
+                        {isMapClickEnabled ? 'touch_app' : 'do_not_touch'}
+                    </span>
+                </button>
+            </div>
+
             {/* Route info overlay - Redesigned */}
             {routeInfo && (
                 <div className="route-info-overlay">
@@ -304,11 +319,13 @@ export default function Map({
                 </div>
             </div>
 
-            {/* Click hint */}
-            <div className="map-click-hint">
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>touch_app</span>
-                <span>Clic en el mapa para añadir punto</span>
-            </div>
+            {/* Click hint - Only shown when enabled */}
+            {isMapClickEnabled && (
+                <div className="map-click-hint">
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>touch_app</span>
+                    <span>Modo añadir puntos ACTIVO</span>
+                </div>
+            )}
         </div>
     );
 }

@@ -170,7 +170,26 @@ export default function Sidebar({
                     </div>
                 </div>
 
-                {/* Calculate button removed as it is now automatic */}
+                <div className="sidebar-actions">
+                    <button
+                        onClick={() => onCalculateRoute()}
+                        disabled={stops.length < 2 || isLoading}
+                        className="primary-btn"
+                        style={{ marginTop: '16px' }}
+                    >
+                        {isLoading ? (
+                            <>
+                                <span className="spinner"></span>
+                                Actualizando...
+                            </>
+                        ) : (
+                            <>
+                                <span className="material-symbols-outlined">refresh</span>
+                                Refrescar Ruta
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
         </aside>
     );
