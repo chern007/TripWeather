@@ -63,31 +63,36 @@ function createStopIcon(number, isStart, isEnd) {
 }
 
 // Component to recenter on route
-function MapController({ routeGeometry, stops, routeSegments }) {
+function MapController({ routeGeometry, stops }) {
     const map = useMap();
+    const prevStopsRef = useRef("");
 
     useEffect(() => {
-        // Prefer route segments for bounds if available
-        if (routeSegments && routeSegments.length > 0) {
-            const allPositions = routeSegments.flatMap(seg => seg.positions);
-            if (allPositions.length > 0) {
-                const bounds = L.latLngBounds(allPositions);
-                map.fitBounds(bounds, { padding: [50, 50] });
-                return;
-            }
+        // Create a signature for the current stops to detect actual changes
+        // (Length or position changes)
+        const stopsSignature = stops
+            ? stops.map(s => `${s.id}-${s.lat.toFixed(4)}-${s.lon.toFixed(4)}`).join('|')
+            : "";
+
+        // If signature hasn't changed, do NOT re-fit bounds
+        if (prevStopsRef.current === stopsSignature) {
+            return;
         }
 
-        if (routeGeometry && routeGeometry.length > 0) {
-            const bounds = L.latLngBounds(routeGeometry);
-            map.fitBounds(bounds, { padding: [50, 50] });
-        } else if (stops && stops.length > 0) {
+        prevStopsRef.current = stopsSignature;
+
+        if (stops && stops.length > 0) {
             const resolvedStops = stops.filter(s => s.resolved);
             if (resolvedStops.length > 0) {
                 const bounds = L.latLngBounds(resolvedStops.map(s => [s.lat, s.lon]));
+                // Add route geometry to bounds if available for better fit, but primarily rely on stops trigger
+                if (routeGeometry && routeGeometry.length > 0) {
+                    bounds.extend(L.latLngBounds(routeGeometry));
+                }
                 map.fitBounds(bounds, { padding: [50, 50] });
             }
         }
-    }, [routeGeometry, stops, map]); // Removed routeSegments to prevent auto-zoom on weather updates
+    }, [stops, routeGeometry, map]);
 
     return null;
 }
@@ -113,7 +118,8 @@ export default function Map({
     onMapClick,
     isMapClickEnabled,
     setIsMapClickEnabled,
-    showSidebar
+    showSidebar,
+    isMobile
 }) {
     const mapRef = useRef(null);
 
@@ -143,13 +149,17 @@ export default function Map({
         return `${km.toFixed(1)} km`;
     };
 
+    // Determine if controls should be visible
+    // Visible if: Not Mobile OR (Mobile AND Sidebar Closed)
+    const showControls = !isMobile || !showSidebar;
+
     return (
         <div className="map-container">
             <MapContainer
                 ref={mapRef}
                 center={defaultCenter}
                 zoom={defaultZoom}
-                className="leaflet-map"
+                className={`leaflet-map ${isMapClickEnabled ? 'click-mode' : ''}`}
                 scrollWheelZoom={true}
                 zoomControl={true}
             >
@@ -265,8 +275,8 @@ export default function Map({
                 ))}
             </MapContainer>
 
-            {/* Custom Map Controls UI - Hidden when Sidebar is open (mobile menu) */}
-            {!showSidebar && (
+            {/* Custom Map Controls UI - Visible on Desktop OR when Mobile Sidebar is closed */}
+            {showControls && (
                 <div className="map-controls-ui">
                     <button
                         className={`map-control-btn ${isMapClickEnabled ? 'primary' : ''}`}

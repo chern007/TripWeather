@@ -301,6 +301,7 @@ function App() {
           isMapClickEnabled={isMapClickEnabled}
           setIsMapClickEnabled={setIsMapClickEnabled}
           showSidebar={showSidebar}
+          isMobile={isMobile}
         />
       </div>
     </div>
