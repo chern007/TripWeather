@@ -150,7 +150,7 @@ function App() {
     }
   }, [stops, timeMultiplier, startTime]); // Recalculate on stops, speed, or time start change
 
-  const handleCalculateRoute = useCallback(async (currentResolvedStops) => {
+  const handleCalculateRoute = useCallback(async (currentResolvedStops, isAutoRefresh = false) => {
     // If not passed (manual call), filter from state
     const resolvedStops = currentResolvedStops || stops.filter(s => s.resolved);
 
@@ -168,7 +168,9 @@ function App() {
       const route = await getRoute(resolvedStops.map(s => ({ lat: s.lat, lon: s.lon })));
 
       if (!route) {
-        alert('No se pudo calcular la ruta. Verifica que los puntos sean accesibles por carretera.');
+        if (!isAutoRefresh) {
+          alert('No se pudo calcular la ruta. Verifica que los puntos sean accesibles por carretera.');
+        }
         setIsLoading(false);
         return;
       }
@@ -228,7 +230,7 @@ function App() {
       // This will update the 'now' time implicitly if we used Date.now(), 
       // but since startTime is state, we might want to update startTime if it was "current time".
       // For now, we just refresh weather for the existing time window.
-      handleCalculateRoute(null);
+      handleCalculateRoute(null, true);
     }, 60000); // 60000 ms = 1 minute
 
     return () => clearInterval(intervalId);

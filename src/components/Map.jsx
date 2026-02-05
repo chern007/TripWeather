@@ -315,7 +315,11 @@ export default function Map({
                 Let's hide Legend if Sidebar is Open OR if Map Click Mode is Enabled to save space/avoid overlap, or just ensure positioning.
                 The user said: "deberá desaparecer al mostrar el menú... (tambien el cuadro de 'añadir puntos ACTIVO')" -> If Sidebar Open, Hide BOTH.
             */}
-            {!showSidebar && (
+            {/* Legend and Click Hint - Positioned at bottom left
+                Show on PC always (since sidebar is side-by-side).
+                Show on Mobile ONLY if sidebar is closed.
+            */}
+            {(!isMobile || !showSidebar) && (
                 <>
                     {/* Legend: Show only if NOT in 'add point' mode to keep it clean, OR stack them?
                         Request: "estar mas abajo (igual que hacia la izquierda) mientras no aparezca el cuadro..."
