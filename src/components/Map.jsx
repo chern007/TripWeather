@@ -87,7 +87,7 @@ function MapController({ routeGeometry, stops, routeSegments }) {
                 map.fitBounds(bounds, { padding: [50, 50] });
             }
         }
-    }, [routeGeometry, stops, routeSegments, map]);
+    }, [routeGeometry, stops, map]); // Removed routeSegments to prevent auto-zoom on weather updates
 
     return null;
 }
@@ -265,18 +265,20 @@ export default function Map({
                 ))}
             </MapContainer>
 
-            {/* Custom Map Controls UI */}
-            <div className="map-controls-ui">
-                <button
-                    className={`map-control-btn ${isMapClickEnabled ? 'primary' : ''}`}
-                    onClick={() => setIsMapClickEnabled(prev => !prev)}
-                    title={isMapClickEnabled ? "Desactivar añadir puntos" : "Activar añadir puntos"}
-                >
-                    <span className="material-symbols-outlined">
-                        {isMapClickEnabled ? 'touch_app' : 'do_not_touch'}
-                    </span>
-                </button>
-            </div>
+            {/* Custom Map Controls UI - Hidden when Sidebar is open (mobile menu) */}
+            {!showSidebar && (
+                <div className="map-controls-ui">
+                    <button
+                        className={`map-control-btn ${isMapClickEnabled ? 'primary' : ''}`}
+                        onClick={() => setIsMapClickEnabled(prev => !prev)}
+                        title={isMapClickEnabled ? "Desactivar añadir puntos" : "Activar añadir puntos"}
+                    >
+                        <span className="material-symbols-outlined">
+                            {isMapClickEnabled ? 'touch_app' : 'do_not_touch'}
+                        </span>
+                    </button>
+                </div>
+            )}
 
             {/* Route info overlay - Redesigned */}
             {routeInfo && (
