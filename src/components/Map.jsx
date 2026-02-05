@@ -71,7 +71,8 @@ function MapController({ routeGeometry, stops }) {
         // Create a signature for the current stops to detect actual changes
         // (Length or position changes)
         const stopsSignature = stops
-            ? stops.map(s => `${s.id}-${s.lat.toFixed(4)}-${s.lon.toFixed(4)}`).join('|')
+            ? stops.filter(s => typeof s.lat === 'number' && typeof s.lon === 'number')
+                .map(s => `${s.id}-${s.lat.toFixed(4)}-${s.lon.toFixed(4)}`).join('|')
             : "";
 
         // If signature hasn't changed, do NOT re-fit bounds
