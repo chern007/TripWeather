@@ -215,7 +215,7 @@ function App() {
       setRouteSegments([]);
       setRouteInfo(null);
     }
-  }, [stops, timeMultiplier, startTime, handleCalculateRoute, isLoading]);
+  }, [stops, timeMultiplier, startTime]);
 
   // Auto-refresh interval (every 1 minute)
   useEffect(() => {
