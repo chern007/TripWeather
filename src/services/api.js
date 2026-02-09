@@ -308,6 +308,12 @@ export function sampleRoutePoints(geometry, totalDuration, startTime, intervalMi
     });
   } else {
     lastPoint.isEnd = true;
+    // Ensure the last point matches the actual end of the route
+    // so the drawn path covers the entire geometry
+    lastPoint.lat = lastGeometry[0];
+    lastPoint.lon = lastGeometry[1];
+    lastPoint.time = endTime;
+    lastPoint.geometryIndex = geometry.length - 1;
   }
 
   return points;
